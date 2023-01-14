@@ -1,6 +1,20 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
+
+interface Story {
+    by: string,
+    descendants: number,
+    id: number,
+    kids: number[],
+    score: number,
+    time: number,
+    title: string,
+    type: string,
+    url: string
+}
 
 const Home: React.FC = () => {
+
+    const [stories, setStories] = useState<[] | Story[]>([])
 
     useEffect(() => {
         const baseURL = 'https://hacker-news.firebaseio.com/v0'
@@ -12,13 +26,20 @@ const Home: React.FC = () => {
             return Promise.all(promises)
         })
         .then(response => Promise.all(response.map(r => r.json())))
-        .then(data => console.log(data))
+        .then(data => {
+            console.log(data)
+            setStories(data)
+        })
 
     }, [])
 
     return (
         <div>
-            <h1>Home</h1>
+            {stories && stories.map((story: Story) => {
+                return (<>
+                    <h1>{story.title}</h1>
+                </>)
+            })}
         </div>
     )
 }
